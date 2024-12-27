@@ -2,7 +2,10 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <time.h>
+#include <queue>  // Встроенная библиотека для очереди
+
 #define MAX_NODES 10  // Определите количество вершин графа
+
 // Функция для генерации случайной матрицы смежности для неориентированного графа
 void generateAdjacencyMatrix(int matrix[MAX_NODES][MAX_NODES], int numNodes) {
     srand(time(NULL));
@@ -16,6 +19,7 @@ void generateAdjacencyMatrix(int matrix[MAX_NODES][MAX_NODES], int numNodes) {
         }
     }
 }
+
 // Функция для вывода матрицы смежности на экран
 void printAdjacencyMatrix(int matrix[MAX_NODES][MAX_NODES], int numNodes) {
     printf("Матрица смежности:\n");
@@ -26,34 +30,41 @@ void printAdjacencyMatrix(int matrix[MAX_NODES][MAX_NODES], int numNodes) {
         printf("\n");
     }
 }
-// Реализация обхода в ширину (BFS) для графа с использованием очереди
+
+// Реализация обхода в ширину (BFS) для графа с использованием очереди из библиотеки queue
 void bfs(int matrix[MAX_NODES][MAX_NODES], int numNodes, int startNode) {
     bool visited[MAX_NODES] = {false};
-    int queue[MAX_NODES];
-    int front = 0, rear = 0;
+    std::queue<int> q;  // Создаем очередь
     visited[startNode] = true;
-    queue[rear++] = startNode;
+    q.push(startNode);  // Добавляем стартовую вершину в очередь
+
     printf("Обход в ширину начиная с вершины %d: ", startNode);
-    while (front < rear) {
-        int currentNode = queue[front++];
+    while (!q.empty()) {
+        int currentNode = q.front();  // Получаем элемент из начала очереди
+        q.pop();  // Удаляем элемент из очереди
         printf("%d ", currentNode);
+
         for (int i = 0; i < numNodes; i++) {
             if (matrix[currentNode][i] && !visited[i]) {
                 visited[i] = true;
-                queue[rear++] = i;
+                q.push(i);  // Добавляем новую вершину в очередь
             }
         }
     }
     printf("\n");
 }
+
 // Основная функция
 int main() {
     int numNodes = MAX_NODES;
     int adjacencyMatrix[MAX_NODES][MAX_NODES];
+    
     // Генерация и вывод матрицы смежности
     generateAdjacencyMatrix(adjacencyMatrix, numNodes);
     printAdjacencyMatrix(adjacencyMatrix, numNodes);
+    
     // Выполнение обхода в ширину
     bfs(adjacencyMatrix, numNodes, 0);
+    
     return 0;
 }
